@@ -3,7 +3,7 @@
 // You can use Sass (SCSS) here: https://sass-lang.com/
 
 * {
-  font-family: "Nitalagoruika-03", "Aktiv Grotesk","Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-family: "Nitalagoruika-05", "Aktiv Grotesk","Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   color: #555;
 }
 
@@ -68,7 +68,7 @@ body {
     h3 {
       font-size: 0.8rem;
       font-weight: normal;
-      font-family: "Nitalagoruika-01", sans-serif
+      font-family: "Nitalagoruika-03", sans-serif
     }
   }
 }
@@ -133,18 +133,18 @@ body {
 
 // ===========================
 .video-box__content__marker-box__item {
-  font-family: "Nitalagoruika-01", sans-serif;
+  font-family: "Nitalagoruika-03", sans-serif;
 
   * {
-    font-family: "Nitalagoruika-01", sans-serif;
+    font-family: "Nitalagoruika-03", sans-serif;
   }
 
   &.selected {
     font-weight: bold;
-    font-family: "Nitalagoruika-03", sans-serif;
+    font-family: "Nitalagoruika-05", sans-serif;
 
     * {
-      font-family: "Nitalagoruika-03", sans-serif;
+      font-family: "Nitalagoruika-05", sans-serif;
     }
   }
 }
