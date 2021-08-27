@@ -97,7 +97,9 @@ class YoutubeDataFetcher
     video.youtube_channels_id = channel.id
     video.save!
 
-    fetch_comments!(video.video_id, update: update, is_generate_markers: is_generate_markers)
+    unless video_hash['snippet']['liveBroadcastContent'] == 'upcoming'
+      fetch_comments!(video.video_id, update: update, is_generate_markers: is_generate_markers)
+    end
   end
 
   def fetch_comments_with_channel_id!(channel_id, update: false, is_generate_markers: false)
