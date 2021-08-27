@@ -54,5 +54,5 @@ production:
   database: youtuberinrin_production
   username: youtuberinrin
   host: <%= ENV['YOUTUBERINRIN_DATABASE_ENDPOINT'] %>
-  user: <%= ENV['YOUTUBERINRIN_DATABASE_USER'] %>
+  username: <%= ENV['YOUTUBERINRIN_DATABASE_USER'] %>
   password: <%= ENV['YOUTUBERINRIN_DATABASE_PASSWORD'] %>
