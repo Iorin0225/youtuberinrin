@@ -59,9 +59,27 @@
 
 <script type="text/javascript">
 
+  window.addEventListener("resize", function(event) {
+    optimizeSize();
+  });
+
   document.addEventListener('DOMContentLoaded', function() {
     toggleLoading(false);
   });
+
+  function optimizeSize() {
+    let playerObject = document.querySelector('.youtube-player-wrapper');
+
+    if (window.innerWidth < 795) {
+      playerObject.style.width = '';
+      return;
+    }
+
+    let playerHeight = playerObject.clientHeight;
+    let optimizedWidth = playerHeight * (16/9);
+    playerObject.style.width = `${optimizedWidth}px`;
+    playerObject.style.width = `${playerObject.clientWidth}px`;
+  }
 
   function showPlayerWithUrl(title, url, videoId, bottomNote) {
     let playerIframe = document.querySelector('#youtube-player');
@@ -120,6 +138,7 @@
     if (isShow) {
       playerContainer.style.visibility = 'visible'
       opacity = 1
+      optimizeSize();
     }
 
     TweenMax.to(playerContainer, 0.3, {
