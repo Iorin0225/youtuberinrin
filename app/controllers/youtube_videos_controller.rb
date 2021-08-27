@@ -5,8 +5,8 @@ class YoutubeVideosController < ApplicationController
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take
     @videos = @channel.videos
-    @videos = process_search_query(search_query) if search_query.present?
     @videos = @videos.eager_load(:markers)
+    process_search_query
     @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
   end
 
@@ -20,12 +20,25 @@ class YoutubeVideosController < ApplicationController
 
   private
 
-  def process_search_query(query)
-    like_query = "%#{query}%"
-    @videos.where('youtube_videos.title LIKE ? OR youtube_videos.description LIKE ?', like_query, like_query)
+  def process_search_query
+    if video_search_query.present?
+      like_query = "%#{video_search_query}%"
+      @videos = @videos.where(
+        'youtube_videos.title LIKE ? OR youtube_videos.description LIKE ?', like_query, like_query
+      )
+    end
+
+    if marker_search_query.present?
+      like_query = "%#{marker_search_query}%"
+      @videos = @videos.where('youtube_video_markers.label LIKE ?', like_query)
+    end
   end
 
-  def search_query
-    params[:query]
+  def video_search_query
+    params[:video_query]
+  end
+
+  def marker_search_query
+    params[:marker_query]
   end
 end
