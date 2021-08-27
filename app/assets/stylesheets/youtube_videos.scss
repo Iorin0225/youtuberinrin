@@ -168,8 +168,7 @@ body {
     top: calc(50% - 95vh/2);
     left: calc(50% - 80vw/2);
     width: 80vw;
-    height: 90vh;
-    max-height: 95vh;
+    height: 95vh;
     overflow-y: scroll;
 
     border-radius: 20px;
@@ -179,10 +178,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 10px;
+    gap: 5px;
 
     .player-title {
       text-align: center;
+      margin: .5rem 0 0;
     }
 
     .youtube-player-wrapper {
