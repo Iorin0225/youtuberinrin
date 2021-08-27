@@ -59,6 +59,7 @@ group :development do
   gem 'rubocop-rspec',       require: false
   gem 'rubocop-thread_safety'
 
+  gem 'bullet'
 end
 
 group :test do
