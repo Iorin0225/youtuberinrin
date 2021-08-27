@@ -1,0 +1,149 @@
+<div id="loading">
+  <div class="loader"></div>
+</div>
+
+<div class="header">
+  <div class="header__thumbnail"><%= image_tag(@channel.thumbnail_url) %></div>
+  <div class="header__title-box">
+    <h2>Youtube Channel</h2>
+    <h1><%= @channel.title %></h1>
+    <h3><%= @channel.description %></h3>
+  </div>
+</div>
+
+<div class="content">
+  <div class="video-container">
+    <% @videos.order(published_at: :desc).each_with_index do | video, index | %>
+    <div id="video-box-<%= video.video_id %>" class="video-box">
+      <div class="video-box__thumbnail">
+        <%= link_to('#', target: '_blank', onclick: "showPlayerWithUrl('#{video.title}', '#{video.video_url_for_iframe}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); return false;") do %>
+          <%= image_tag(video.thumbnail_url) %>
+        <% end %>
+      </div>
+      <div class="video-box__content">
+        <h3 class="video-box__content__title"><%= video.title %></h3>
+        <h4 class="video-box__content__description"></h4>
+        <div class="video-box__content__marker-box">
+          <% video.markers.order(seconds: :asc).each do | marker | %>
+          <div class="video-box__content__marker-box__item marker-<%= marker.id %>">
+            <%= link_to(marker.time_format, '#', onclick: "showPlayerWithUrl('#{marker.label}', '#{video_url_with_marker_for_iframe(video, marker)}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); setSelectedMarker('#{marker.id}'); return false;") %>
+            <%= marker.label %>
+          </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
+
+<div id="player-container" class="player-container">
+  <div class="player-box">
+    <h2 class='player-title'></h2>
+    <div class="youtube-player-wrapper">
+      <iframe id="youtube-player" type="text/html" frameborder="0" src='about:blank'></iframe>
+    </div>
+    <div class="player-markers">
+      ここにマーカーが入ります。すごいね。
+    </div>
+    <div class="player-close-button-wrapper icon-button">
+      <button class="player-close-button" onclick="hidePlayer()"  v-bind:style="iconStyle">
+        <i class='fas fa-times fa-3x'></i>
+      </button>
+    </div>
+    <div class="player-bottom-note">
+      Powered by <%= @channel.title %>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  document.addEventListener('DOMContentLoaded', function() {
+    toggleLoading(false);
+  });
+
+  function showPlayerWithUrl(title, url, videoId, bottomNote) {
+    let playerIframe = document.querySelector('#youtube-player');
+    playerIframe.src = url;
+
+    let titleObject = document.querySelector('#player-container .player-title')
+    titleObject.innerText = title
+
+    let markerAreaObject = document.querySelector('#player-container .player-markers')
+    let markerAreaObjectOrigin = document.querySelector(`#video-box-${videoId} .video-box__content__marker-box`)
+    markerAreaObject.innerHTML = markerAreaObjectOrigin.innerHTML;
+
+    let bottomNoteObject = document.querySelector('#player-container .player-bottom-note')
+    bottomNoteObject.innerText = bottomNote
+    togglePlayer(true);
+  }
+
+  function toggleLoading(isShow) {
+    let loadingObject = document.querySelector('#loading');
+    let opacity = 0
+    if (isShow) {
+      loadingObject.style.visibility = 'visible'
+      opacity = 1
+    }
+
+    TweenMax.to(loadingObject, 0.3, {
+      opacity: opacity,
+      onComplete: function() {
+        if (!isShow) {
+          loadingObject.style.visibility = 'hidden'
+        }
+      }
+    });
+
+  }
+  function hidePlayer(url) {
+    let playerIframe = document.querySelector('#youtube-player');
+    playerIframe.src = 'about:blank';
+
+    let titleObject = document.querySelector('#player-container .player-title')
+    titleObject.innerText = ''
+
+    let markerAreaObject = document.querySelector('#player-container .player-markers')
+    markerAreaObject.innerHTML = '';
+
+    let bottomNoteObject = document.querySelector('#player-container .player-bottom-note')
+    bottomNoteObject.innerText = ''
+
+    togglePlayer(false);
+    releaseSelectedMarker();
+  }
+
+  function togglePlayer(isShow) {
+    let playerContainer = document.querySelector('#player-container');
+    let opacity = 0
+    if (isShow) {
+      playerContainer.style.visibility = 'visible'
+      opacity = 1
+    }
+
+    TweenMax.to(playerContainer, 0.3, {
+      opacity: opacity,
+      onComplete: function() {
+        if (!isShow) {
+          playerContainer.style.visibility = 'hidden'
+        }
+      }
+    });
+  }
+
+  function setSelectedMarker(markerId) {
+    releaseSelectedMarker()
+
+    let selectedMarkerObjects = document.querySelectorAll(`.marker-${markerId}`)
+    selectedMarkerObjects.forEach(markerObject => {
+      markerObject.classList.add('selected')
+    })
+  }
+
+  function releaseSelectedMarker() {
+    document.querySelectorAll('.video-box__content__marker-box__item.selected').forEach(selectedObject => {
+      selectedObject.classList.remove('selected')
+    })
+  }
+</script>

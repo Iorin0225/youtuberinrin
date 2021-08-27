@@ -1,0 +1,55 @@
+args = {}
+args['UID'] = Process.uid
+
+dockerfile ".kaiser/Dockerfile", args: args
+
+db "mysql:5.6",
+  port: 3306,
+  data_dir: "/var/lib/mysql",
+  params: "-e MYSQL_ROOT_PASSWORD=test123",
+  commands: "
+    --character-set-server=utf8mb4
+    --collation-server=utf8mb4_unicode_ci
+    --innodb-large-prefix
+    --innodb-file-format=barracuda",
+  waitscript_params: "
+    -e MYSQL_PORT_3306_TCP_ADDR=<%= db_container_name %>
+    -e MYSQL_PORT_3306_TCP_PORT=3306
+    -e MYSQL_ENV_MYSQL_ROOT_PASSWORD=test123",
+  waitscript: <<-SCRIPT
+#!/bin/bash
+
+echo "Waiting for mysql to start."
+until mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD" -e "SELECT 1"
+do
+  printf "."
+  sleep 1
+done
+
+echo -e "\nmysql started."
+  SCRIPT
+
+app_params "
+  -e REDIS_URL=redis://<%= @config[:shared_names][:redis] %>:6379
+  -e DATABASE_URL=mysql2://root:test123@<%= db_container_name %>
+  -e READONLY_DATABASE_URL=mysql2://root:test123@<%= db_container_name %>
+  -e REMOTE_CHROME_HOST=<%= @config[:shared_names][:chrome] %>
+  -e TEST_HOST=<%= app_container_name %>
+  -e TEST_SERVER=webrick"
+
+
+attach_mount 'app', '/app/app'
+attach_mount 'bin', '/app/bin'
+attach_mount 'config', '/app/config'
+attach_mount 'db', '/app/db'
+attach_mount 'lib', '/app/lib'
+attach_mount 'test', '/app/test'
+attach_mount 'vendor', '/app/vendor'
+attach_mount "Gemfile", "/app/Gemfile"
+attach_mount "Gemfile.lock", "/app/Gemfile.lock"
+attach_mount "Rakefile", "/app/Rakefile"
+
+type :http
+
+expose "52130"
+db_reset_command "bin/setup"
