@@ -56,3 +56,4 @@ production:
   host: <%= ENV['YOUTUBERINRIN_DATABASE_ENDPOINT'] %>
   username: <%= ENV['YOUTUBERINRIN_DATABASE_USER'] %>
   password: <%= ENV['YOUTUBERINRIN_DATABASE_PASSWORD'] %>
+  port: 3306
