@@ -13,7 +13,7 @@
 
 <div class="content">
   <div class="video-container">
-    <% @videos.order(published_at: :desc).each_with_index do | video, index | %>
+    <% @videos.each_with_index do | video, index | %>
     <div id="video-box-<%= video.video_id %>" class="video-box">
       <div class="video-box__thumbnail">
         <%= link_to('#', target: '_blank', onclick: "showPlayerWithUrl('#{video.title}', '#{video.video_url_for_iframe}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); return false;") do %>
@@ -24,7 +24,7 @@
         <h3 class="video-box__content__title"><%= video.title %></h3>
         <h4 class="video-box__content__description"></h4>
         <div class="video-box__content__marker-box">
-          <% video.markers.order(seconds: :asc).each do | marker | %>
+          <% video.markers.each do | marker | %>
           <div class="video-box__content__marker-box__item marker-<%= marker.id %>">
             <%= link_to(marker.time_format, '#', onclick: "showPlayerWithUrl('#{marker.label}', '#{video_url_with_marker_for_iframe(video, marker)}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); setSelectedMarker('#{marker.id}'); return false;") %>
             <%= marker.label %>
