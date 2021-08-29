@@ -60,6 +60,8 @@ group :development do
   gem 'rubocop-thread_safety'
 
   gem 'bullet'
+
+  gem 'brakeman'
 end
 
 group :test do
