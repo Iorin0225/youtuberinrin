@@ -8,8 +8,7 @@
 }
 
 body {
-
-  background: #eee;
+  background: #fff;
 }
 
 img {
@@ -37,26 +36,24 @@ and (min-resolution:.001dpcm) {
 
 
 .icon-button {
-
   button {
     border: none;
     cursor: pointer;
 
     border-radius: 50%;
-    width: 4rem;
-    height: 4rem;
+    width: 2rem;
+    height: 2rem;
   }
 }
 
 // ===========================
 
 .header {
-  background: #fff;
   text-align: center;
   display: flex;
   justify-content: center;
   padding-bottom: 10px;
-  border-bottom: 2px solid #333;
+  border-bottom: 1px solid #ccc;
 
   .header__thumbnail {
     height: 100px;
@@ -97,7 +94,7 @@ and (min-resolution:.001dpcm) {
   .video-box {
     display: flex;
     justify-content: space-evenly;
-    border: 1px solid #333;
+    border: 1px solid #ccc;
     border-radius: 20px;
 
     padding: 40px 0;
@@ -231,7 +228,7 @@ and (min-resolution:.001dpcm) {
 
     .player-markers {
       flex: 2;
-      border: 1px solid #333;
+      border: 1px solid #ccc;
       border-radius: 20px;
       margin: 0;
       padding: 10px;
@@ -243,6 +240,26 @@ and (min-resolution:.001dpcm) {
       position: absolute;
       top: 20px;
       right: 20px;
+
+      button {
+        background: #666;
+        transition: 0.1s;
+        border: 1px solid #666;
+
+
+        i {
+          transition: 0.3s;
+          color: #fff;
+        }
+
+        &:hover {
+          background: #fff;
+
+          i {
+            color: #666
+          }
+        }
+      }
     }
 
     .player-bottom-note {
