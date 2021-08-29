@@ -63,8 +63,13 @@ and (min-resolution:.001dpcm) {
   text-align: center;
   display: flex;
   justify-content: center;
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   border-bottom: 1px solid #ccc;
+  width: 100vw;
+
+  * {
+    transition: .2s;
+  }
 
   .header__thumbnail {
     height: 100px;
@@ -90,6 +95,32 @@ and (min-resolution:.001dpcm) {
       font-size: 0.8rem;
       font-weight: normal;
       font-family: "Nitalagoruika-03", sans-serif
+    }
+  }
+
+
+  &.header--min {
+    background: #fff;
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding-bottom: 0;
+
+    .header__thumbnail {
+      height: 40px;
+      width: 40px;
+    }
+
+    .header__title-box {
+      h1 {
+        font-size: 1rem;
+      }
+      h2 {
+        display: none;
+      }
+      h3 {
+        font-size: 0.5rem;
+      }
     }
   }
 }

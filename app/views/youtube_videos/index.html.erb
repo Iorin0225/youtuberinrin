@@ -2,7 +2,7 @@
   <div class="loader"></div>
 </div>
 
-<div class="header">
+<div id="header" class="header">
   <div class="header__thumbnail"><%= image_tag(@channel.thumbnail_url) %></div>
   <div class="header__title-box">
     <h2>Youtube Channel</h2>
@@ -62,6 +62,16 @@
   window.addEventListener("resize", function(event) {
     optimizeSize();
   });
+
+  window.addEventListener("scroll", function(event) {
+    let header = document.querySelector('#header');
+    if (window.scrollY > 0) {
+      header.classList.add('header--min')
+    } else {
+      header.classList.remove('header--min')
+    }
+  });
+
 
   document.addEventListener('DOMContentLoaded', function() {
     toggleLoading(false);
