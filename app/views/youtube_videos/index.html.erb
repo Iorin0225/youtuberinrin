@@ -22,7 +22,7 @@
       </div>
       <div class="video-box__content">
         <h3 class="video-box__content__title"><%= video.title %></h3>
-        <h4 class="video-box__content__description"></h4>
+        <h4 class="video-box__content__description"><%= video.description.split('#').first %></h4>
         <div class="video-box__content__marker-box">
           <% video.markers.each do | marker | %>
           <div class="video-box__content__marker-box__item marker-<%= marker.id %>">
@@ -48,7 +48,7 @@
     </div>
     <div class="player-close-button-wrapper icon-button">
       <button class="player-close-button" onclick="hidePlayer()"  v-bind:style="iconStyle">
-        <i class='fas fa-times fa-3x'></i>
+        <i class='fas fa-times fa-2x'></i>
       </button>
     </div>
     <div class="player-bottom-note">
@@ -137,6 +137,7 @@
     let opacity = 0
     if (isShow) {
       playerContainer.style.visibility = 'visible'
+      playerContainer.style.display = 'initial'
       opacity = 1
       optimizeSize();
     }
@@ -146,6 +147,7 @@
       onComplete: function() {
         if (!isShow) {
           playerContainer.style.visibility = 'hidden'
+          playerContainer.style.display = 'none'
         }
       }
     });
