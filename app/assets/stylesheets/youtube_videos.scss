@@ -128,13 +128,17 @@ and (min-resolution:.001dpcm) {
         width: 100%;
       }
 
-      h3 {
+      h3, h4 {
         margin-top: 0;
+        margin-bottom: .5rem;
+      }
+
+      h3 {
         font-size: 1.5rem;
       }
 
       h4 {
-        font-size: 1.25rem;
+        font-size: .8rem;
         font-weight: normal;
       }
     }
