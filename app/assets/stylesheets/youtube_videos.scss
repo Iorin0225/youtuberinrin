@@ -243,21 +243,21 @@ and (min-resolution:.001dpcm) {
       right: 20px;
 
       button {
-        background: #666;
+        background: #fff;
         transition: 0.1s;
         border: 1px solid #666;
 
 
         i {
           transition: 0.3s;
-          color: #fff;
+          color: #666;
         }
 
         &:hover {
-          background: #fff;
+          background: #666;
 
           i {
-            color: #666
+            color: #fff;
           }
         }
       }
