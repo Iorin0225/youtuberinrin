@@ -8,6 +8,16 @@
   font-weight: 500;
 }
 
+a {
+  &:hover {
+    color: #aaa;
+
+    * {
+      color: #aaa;
+    }
+  }
+}
+
 body {
   background: #fff;
 }
