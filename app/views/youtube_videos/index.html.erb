@@ -137,6 +137,7 @@
     let opacity = 0
     if (isShow) {
       playerContainer.style.visibility = 'visible'
+      playerContainer.style.display = 'initial'
       opacity = 1
       optimizeSize();
     }
@@ -146,6 +147,7 @@
       onComplete: function() {
         if (!isShow) {
           playerContainer.style.visibility = 'hidden'
+          playerContainer.style.display = 'none'
         }
       }
     });

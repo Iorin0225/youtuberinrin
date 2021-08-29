@@ -164,6 +164,7 @@ and (min-resolution:.001dpcm) {
 .player-container {
   opacity: 0;
   visibility: hidden;
+  display: none;
   position: fixed;
   left: 0;
   top: 0;
