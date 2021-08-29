@@ -20,6 +20,19 @@ body {
   margin: 0;
 }
 
+/* Chrome version 29 and above */
+@media screen and (-webkit-min-device-pixel-ratio:0)
+and (min-resolution:.001dpcm) {
+  ::-webkit-scrollbar {
+      width: 5px;
+      height: 0;
+  }
+
+  ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background: #aaa;
+  }
+}
 // ===========================
 
 
