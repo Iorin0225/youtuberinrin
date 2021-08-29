@@ -5,6 +5,7 @@
 * {
   font-family: "Nitalagoruika-05", "Aktiv Grotesk","Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   color: #555;
+  font-weight: 500;
 }
 
 body {
@@ -148,16 +149,18 @@ and (min-resolution:.001dpcm) {
 // ===========================
 .video-box__content__marker-box__item {
   font-family: "Nitalagoruika-03", sans-serif;
+  line-height: 1.25rem;
 
   * {
     font-family: "Nitalagoruika-03", sans-serif;
   }
 
   &.selected {
-    font-weight: bold;
+    font-weight: 800;
     font-family: "Nitalagoruika-05", sans-serif;
 
     * {
+      font-weight: 800;
       font-family: "Nitalagoruika-05", sans-serif;
     }
   }
