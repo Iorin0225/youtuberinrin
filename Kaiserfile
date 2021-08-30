@@ -3,15 +3,13 @@ args['UID'] = Process.uid
 
 dockerfile ".kaiser/Dockerfile", args: args
 
-db "mysql:5.6",
+db "mysql:8.0",
   port: 3306,
   data_dir: "/var/lib/mysql",
   params: "-e MYSQL_ROOT_PASSWORD=test123",
   commands: "
     --character-set-server=utf8mb4
-    --collation-server=utf8mb4_unicode_ci
-    --innodb-large-prefix
-    --innodb-file-format=barracuda",
+    --collation-server=utf8mb4_unicode_ci",
   waitscript_params: "
     -e MYSQL_PORT_3306_TCP_ADDR=<%= db_container_name %>
     -e MYSQL_PORT_3306_TCP_PORT=3306
