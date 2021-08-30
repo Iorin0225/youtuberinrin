@@ -52,14 +52,32 @@ and (min-resolution:.001dpcm) {
     cursor: pointer;
 
     border-radius: 50%;
-    width: 2rem;
-    height: 2rem;
+
+    &.white-button {
+      background: #fff;
+      transition: 0.1s;
+      border: 1px solid #666;
+
+      i {
+        transition: 0.3s;
+        color: #666;
+      }
+
+      &:hover {
+        background: #666;
+
+        i {
+          color: #fff;
+        }
+      }
+    }
   }
 }
 
 // ===========================
 
 .header {
+  position: relative;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -98,12 +116,21 @@ and (min-resolution:.001dpcm) {
     }
   }
 
+  .header__action-buttons {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+
+    .icon-button button {
+      font-size: .4rem;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
 
   &.header--min {
     background: #fff;
     position: fixed;
-    top: 0;
-    right: 0;
     padding-bottom: 0;
 
     .header__thumbnail {
@@ -209,7 +236,8 @@ and (min-resolution:.001dpcm) {
 
 // ===========================
 
-.player-container {
+.overlay-panel {
+
   opacity: 0;
   visibility: hidden;
   display: none;
@@ -222,7 +250,7 @@ and (min-resolution:.001dpcm) {
   height: 100%;
   overflow: hidden;
 
-  .player-box {
+  .overlay-panel__content {
     position: fixed;
     top: calc(50% - 95vh/2);
     left: calc(50% - 80vw/2);
@@ -233,6 +261,23 @@ and (min-resolution:.001dpcm) {
     border-radius: 20px;
     background: #fff;
 
+    .overlay-panel__close-button-wrapper {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+
+      button {
+        width: 3rem;
+        height: 3rem;
+      }
+    }
+  }
+}
+
+// ===========================
+
+.player-container {
+  .player-box {
     padding: 0 10px;
     display: flex;
     flex-direction: column;
@@ -285,32 +330,6 @@ and (min-resolution:.001dpcm) {
       overflow: scroll;
     }
 
-    .player-close-button-wrapper {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-
-      button {
-        background: #fff;
-        transition: 0.1s;
-        border: 1px solid #666;
-
-
-        i {
-          transition: 0.3s;
-          color: #666;
-        }
-
-        &:hover {
-          background: #666;
-
-          i {
-            color: #fff;
-          }
-        }
-      }
-    }
-
     .player-bottom-note {
       font-weight: normal;
       margin: 0;
@@ -320,6 +339,43 @@ and (min-resolution:.001dpcm) {
   }
 }
 
+// =========================
+
+.info-container {
+  .info-box {
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    h2 {
+      padding: .5rem 4rem;
+      font-size: 2rem;
+      text-align: center;
+
+      border: 1px solid #aaa;
+      border-radius: 10px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      border-bottom: 1px solid #aaa;
+    }
+
+    .update-area {
+      width: 100%;
+      .update-area__items {
+        .update-area__items__item {
+          padding-right: 2rem;
+          .update-area__items__item__date {
+            border-bottom: 1px solid #aaa;
+          }
+        }
+      }
+    }
+
+  }
+}
 
 // =========================
 
