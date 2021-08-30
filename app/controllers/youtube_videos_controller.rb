@@ -10,7 +10,7 @@ class YoutubeVideosController < ApplicationController
     @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
 
     @limit = limit
-    @marked = params.has_key?(:video_query) || params.has_key?(:marker_query) || params.has_key?(:limit)
+    @marked = video_search_query.present? || marker_search_query.present? || limit.present?
   end
 
   def show
