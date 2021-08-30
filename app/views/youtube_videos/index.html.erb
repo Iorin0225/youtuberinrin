@@ -11,10 +11,10 @@
   </div>
   <div class="header__action-buttons">
     <div class="info-button-wrapper icon-button">
-      <button class="search-button white-button" onclick="showSearch();">
+      <button class="search-button white-button" onclick="toggleSearchArea(true);">
         <i class='fas fa-search fa-2x'></i>
       </button>
-      <button class="info-button white-button" onclick="toggleInfo(true);">
+      <button class="info-button white-button" onclick="toggleInfoArea(true);">
         <i class='fas fa-info fa-2x'></i>
       </button>
     </div>
@@ -90,7 +90,42 @@
 
     </div>
     <div class="overlay-panel__close-button-wrapper icon-button">
-      <button class="overlay-panel__close-button white-button" onclick="toggleInfo(false)">
+      <button class="overlay-panel__close-button white-button" onclick="toggleInfoArea(false)">
+        <i class='fas fa-times fa-2x'></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="search-container" class="search-container overlay-panel">
+  <div class="search-box overlay-panel__content">
+    <h2>検索！</h2>
+    <div class="form-container">
+      <%= form_with url: root_path, method: :get, local: true, class: 'search-form' do |form| %>
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label 'タイトルなどから検索:' %>
+          </div>
+          <div class="search-form__row__input">
+            <%= form.text_field :video_query, value: params[:video_query], placeholder: 'Jump King' %>
+          </div>
+        </div>
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label '目次から検索:' %>
+          </div>
+          <div class="search-form__row__input">
+            <%= form.text_field :marker_query, value: params[:marker_query], placeholder: '竹田' %>
+          </div>
+        </div>
+        <div class="search-form__row__buttons">
+          <%= form.submit class: 'button button--submit button--large button--gray' %>
+          <%= link_to 'クリア', root_path, class: 'button button--submit button--large button--gray' %>
+        </div>
+      <% end %>
+    </div>
+    <div class="overlay-panel__close-button-wrapper icon-button">
+      <button class="overlay-panel__close-button white-button" onclick="toggleSearchArea(false)">
         <i class='fas fa-times fa-2x'></i>
       </button>
     </div>
@@ -112,8 +147,11 @@
     }
   });
 
-
   document.addEventListener('DOMContentLoaded', function() {
+    toggleLoading(false);
+  });
+
+  document.addEventListener('turbolinks:load', function() {
     toggleLoading(false);
   });
 
@@ -222,7 +260,11 @@
     });
   }
 
-  function toggleInfo(isShow) {
+  function toggleInfoArea(isShow) {
     toggleContainer('#info-container', isShow)
+  }
+
+  function toggleSearchArea(isShow) {
+    toggleContainer('#search-container', isShow)
   }
 </script>
