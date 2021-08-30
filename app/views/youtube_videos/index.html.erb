@@ -11,7 +11,7 @@
   </div>
   <div class="header__action-buttons">
     <div class="info-button-wrapper icon-button">
-      <button class="search-button white-button" onclick="toggleSearchArea(true);">
+      <button class="search-button white-button <%= 'marked' if @marked %>" onclick="toggleSearchArea(true);">
         <i class='fas fa-search fa-2x'></i>
       </button>
       <button class="info-button white-button" onclick="toggleInfoArea(true);">
@@ -99,7 +99,7 @@
 
 <div id="search-container" class="search-container overlay-panel">
   <div class="search-box overlay-panel__content">
-    <h2>検索！</h2>
+    <h2>検索</h2>
     <div class="form-container">
       <%= form_with url: root_path, method: :get, local: true, class: 'search-form' do |form| %>
         <div class="search-form__row">

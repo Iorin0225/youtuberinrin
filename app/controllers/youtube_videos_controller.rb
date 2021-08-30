@@ -8,6 +8,8 @@ class YoutubeVideosController < ApplicationController
     @videos = @videos.eager_load(:markers)
     process_search_query
     @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
+
+    @marked = params.has_key?(:video_query) || params.has_key?(:marker_query)
   end
 
   def show
