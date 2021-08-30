@@ -8,6 +8,9 @@ class YoutubeVideosController < ApplicationController
     @videos = @videos.eager_load(:markers)
     process_search_query
     @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
+
+    @limit = limit
+    @marked = params.has_key?(:video_query) || params.has_key?(:marker_query) || params.has_key?(:limit)
   end
 
   def show
@@ -40,5 +43,9 @@ class YoutubeVideosController < ApplicationController
 
   def marker_search_query
     params[:marker_query]
+  end
+
+  def limit
+    params[:limit].to_i if params[:limit].present?
   end
 end

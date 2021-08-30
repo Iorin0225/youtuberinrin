@@ -9,11 +9,22 @@
     <h1><%= @channel.title %></h1>
     <h3><%= @channel.description %></h3>
   </div>
+  <div class="header__action-buttons">
+    <div class="info-button-wrapper icon-button">
+      <button class="search-button white-button <%= 'marked' if @marked %>" onclick="toggleSearchArea(true);">
+        <i class='fas fa-search fa-2x'></i>
+      </button>
+      <button class="info-button white-button" onclick="toggleInfoArea(true);">
+        <i class='fas fa-info fa-2x'></i>
+      </button>
+    </div>
+  </div>
 </div>
 
 <div class="content">
   <div class="video-container">
     <% @videos.each_with_index do | video, index | %>
+    <% break if @limit && index >= @limit %>
     <div id="video-box-<%= video.video_id %>" class="video-box">
       <div class="video-box__thumbnail">
         <%= link_to('#', target: '_blank', onclick: "showPlayerWithUrl('#{video.title}', '#{video.video_url_for_iframe}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); return false;") do %>
@@ -37,8 +48,8 @@
   </div>
 </div>
 
-<div id="player-container" class="player-container">
-  <div class="player-box">
+<div id="player-container" class="player-container overlay-panel">
+  <div class="player-box overlay-panel__content">
     <h2 class='player-title'></h2>
     <div class="youtube-player-wrapper">
       <iframe id="youtube-player" type="text/html" frameborder="0" src='about:blank'></iframe>
@@ -46,13 +57,86 @@
     <div class="player-markers">
       ここにマーカーが入ります。すごいね。
     </div>
-    <div class="player-close-button-wrapper icon-button">
-      <button class="player-close-button" onclick="hidePlayer()"  v-bind:style="iconStyle">
+    <div class="overlay-panel__close-button-wrapper icon-button">
+      <button class="overlay-panel__close-button white-button" onclick="hidePlayer()">
         <i class='fas fa-times fa-2x'></i>
       </button>
     </div>
     <div class="player-bottom-note">
       Powered by <%= @channel.title %>
+    </div>
+  </div>
+</div>
+
+<div id="info-container" class="info-container overlay-panel">
+  <div class="info-box overlay-panel__content">
+    <h2>お知らせ</h2>
+    <div class="update-area">
+
+      <h3 class="update-area__title">更新情報</h3>
+      <div class="update-area__items">
+        <% Update.updates.each do | update | %>
+          <div class="update-area__items__item">
+            <div class="update-area__items__item__date">
+              <%= update.date_to_human %>
+            </div>
+            <div class="update-area__items__item__description">
+              <% update.content.each do | line | %>
+                <p><%= line %></p>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+    <div class="overlay-panel__close-button-wrapper icon-button">
+      <button class="overlay-panel__close-button white-button" onclick="toggleInfoArea(false)">
+        <i class='fas fa-times fa-2x'></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="search-container" class="search-container overlay-panel">
+  <div class="search-box overlay-panel__content">
+    <h2>検索</h2>
+    <div class="form-container">
+      <%= form_with url: root_path, method: :get, local: true, class: 'search-form' do |form| %>
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label 'タイトルなどから検索:' %>
+          </div>
+          <div class="search-form__row__input">
+            <%= form.text_field :video_query, value: params[:video_query], placeholder: 'Jump King' %>
+          </div>
+        </div>
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label '目次から検索:' %>
+          </div>
+          <div class="search-form__row__input">
+            <%= form.text_field :marker_query, value: params[:marker_query], placeholder: '竹田' %>
+          </div>
+        </div>
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label '表示件数:' %>
+          </div>
+          <div class="search-form__row__input">
+            <%= form.text_field :limit, type: :number, value: params[:limit], placeholder: '100' %>
+          </div>
+        </div>
+        <div class="search-form__row__buttons">
+          <%= form.submit class: 'button button--submit button--large button--gray' %>
+          <%= link_to 'クリア', root_path, class: 'button button--submit button--large button--gray' %>
+        </div>
+      <% end %>
+    </div>
+    <div class="overlay-panel__close-button-wrapper icon-button">
+      <button class="overlay-panel__close-button white-button" onclick="toggleSearchArea(false)">
+        <i class='fas fa-times fa-2x'></i>
+      </button>
     </div>
   </div>
 </div>
@@ -72,8 +156,11 @@
     }
   });
 
-
   document.addEventListener('DOMContentLoaded', function() {
+    toggleLoading(false);
+  });
+
+  document.addEventListener('turbolinks:load', function() {
     toggleLoading(false);
   });
 
@@ -143,24 +230,8 @@
   }
 
   function togglePlayer(isShow) {
-    let playerContainer = document.querySelector('#player-container');
-    let opacity = 0
-    if (isShow) {
-      playerContainer.style.visibility = 'visible'
-      playerContainer.style.display = 'initial'
-      opacity = 1
-      optimizeSize();
-    }
-
-    TweenMax.to(playerContainer, 0.3, {
-      opacity: opacity,
-      onComplete: function() {
-        if (!isShow) {
-          playerContainer.style.visibility = 'hidden'
-          playerContainer.style.display = 'none'
-        }
-      }
-    });
+    toggleContainer('#player-container', isShow)
+    if (isShow) optimizeSize();
   }
 
   function setSelectedMarker(markerId) {
@@ -176,5 +247,33 @@
     document.querySelectorAll('.video-box__content__marker-box__item.selected').forEach(selectedObject => {
       selectedObject.classList.remove('selected')
     })
+  }
+
+  function toggleContainer(query, isShow) {
+    let containerObject = document.querySelector(query);
+    let opacity = 0
+    if (isShow) {
+      containerObject.style.visibility = 'visible'
+      containerObject.style.display = 'initial'
+      opacity = 1
+    }
+
+    TweenMax.to(containerObject, 0.3, {
+      opacity: opacity,
+      onComplete: function() {
+        if (!isShow) {
+          containerObject.style.visibility = 'hidden'
+          containerObject.style.display = 'none'
+        }
+      }
+    });
+  }
+
+  function toggleInfoArea(isShow) {
+    toggleContainer('#info-container', isShow)
+  }
+
+  function toggleSearchArea(isShow) {
+    toggleContainer('#search-container', isShow)
   }
 </script>
