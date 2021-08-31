@@ -21,7 +21,7 @@ class YoutubeVideo < ApplicationRecord
   def self.update_description
     fetcher = YoutubeDataFetcher.new
     ActiveRecord::Base.transaction do
-      YoutubeVideo.where('description like ?', '%#%').where.not('description like ?', "%\n%").find_each do |video|
+      YoutubeVideo.where.not('description like ?', "%\n%").find_each do |video|
         video_hash = fetcher.request_video!(video.video_id)
         video.description = video_hash['snippet']['description']
         video.save!
