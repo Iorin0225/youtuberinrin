@@ -124,7 +124,9 @@ class YoutubeDataFetcher
       )
     end
 
-    video.generate_markers if is_generate_markers
+    ActiveRecord::Base.transaction do
+      video.generate_markers if is_generate_markers
+    end
 
     comment_hashes
   end
@@ -161,7 +163,7 @@ class YoutubeDataFetcher
       part: 'snippet,id',
       type: 'video',
       order: 'date',
-      maxResults: 50,
+      maxResults: 5,
       pageToken: page_token
     }
     response = send_request(SEARCH_PATH, :get, params, nil)
@@ -172,8 +174,8 @@ class YoutubeDataFetcher
     items = response_hash['items']
     return [] if items.empty?
 
-    if response_hash.key?('nextPageToken')
-      items | request_search!(channel_id, response_hash['nextPageToken'])
+    if response_hash.key?('nextPageToken') && false
+      items | request_search!(channel_id, response_hash['nextPageToken'], query: query)
     else
       items
     end

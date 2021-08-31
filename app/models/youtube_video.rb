@@ -18,7 +18,18 @@ class YoutubeVideo < ApplicationRecord
     markers
   end
 
-  def self.hoge
+  def self.update_description
+    fetcher = YoutubeDataFetcher.new
+    ActiveRecord::Base.transaction do
+      YoutubeVideo.where('description like ?', '%#%').where.not('description like ?', "%\n%").find_each do |video|
+        video_hash = fetcher.request_video!(video.video_id)
+        video.description = video_hash['snippet']['description']
+        video.save!
+      end
+    end
+  end
+
+  def self.format_thumbnail_url
     videos = []
     YoutubeVideo.find_each do |video|
       video.thumbnail_url = JSON.parse(video.thumbnail_url).first
