@@ -163,7 +163,7 @@ class YoutubeDataFetcher
       part: 'snippet,id',
       type: 'video',
       order: 'date',
-      maxResults: 5,
+      maxResults: 50,
       pageToken: page_token
     }
     response = send_request(SEARCH_PATH, :get, params, nil)
@@ -174,7 +174,7 @@ class YoutubeDataFetcher
     items = response_hash['items']
     return [] if items.empty?
 
-    if response_hash.key?('nextPageToken') && false
+    if response_hash.key?('nextPageToken')
       items | request_search!(channel_id, response_hash['nextPageToken'], query: query)
     else
       items
