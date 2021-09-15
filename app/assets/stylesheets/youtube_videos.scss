@@ -504,6 +504,7 @@ and (min-resolution:.001dpcm) {
   background: rgba(0,0,0,.25);
 
   text-align: center;
+  z-index: 3000;
 }
 
 .loader {
