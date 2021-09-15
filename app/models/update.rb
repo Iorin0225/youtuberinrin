@@ -18,6 +18,14 @@ class Update
   def self.updates
     update_data_array = [
       [
+        Time.local(2021, 9, 15),
+        '',
+        [
+          '表示件数をデフォルト10件に削減しました。',
+          'スマートフォンでも通信量が制限できますね！',
+        ]
+      ],
+      [
         Time.local(2021, 8, 30),
         '',
         [

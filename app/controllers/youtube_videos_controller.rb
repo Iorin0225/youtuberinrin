@@ -46,6 +46,10 @@ class YoutubeVideosController < ApplicationController
   end
 
   def limit
-    params[:limit].to_i if params[:limit].present?
+    if params[:limit].present?
+      params[:limit].to_i
+    else
+      10
+    end
   end
 end
