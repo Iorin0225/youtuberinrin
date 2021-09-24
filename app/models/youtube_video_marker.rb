@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class YoutubeVideoMarker < ApplicationRecord
+  VALID_MAX_SECONDS = (11.hour + 55.minutes) / 1.second
+
   belongs_to :video, class_name: 'YoutubeVideo', foreign_key: 'youtube_videos_id'
+  scope :valid, -> { where('seconds <= ?', VALID_MAX_SECONDS) }
 
   def time_2nd
     case time.length
