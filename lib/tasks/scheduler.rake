@@ -4,7 +4,7 @@ namespace :youtube do
     Rails.logger.info 'START: Updating Youtube Infos.'
     YoutubeChannel.find_each do | youtube_channel |
       Rails.logger.info " - Updating..., title: #{youtube_channel.title}"
-      # YoutubeDataFetcher.new.fetch!(youtube_channel.channel_id)
+      YoutubeDataFetcher.new.fetch!(youtube_channel.channel_id)
     end
     Rails.logger.info 'END: Updating Youtube Infos.'
   end
