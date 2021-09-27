@@ -18,6 +18,13 @@ class Update
   def self.updates
     update_data_array = [
       [
+        Time.local(2021, 9, 27),
+        '',
+        [
+          '目次の順序が崩れていたのを修正しました。',
+        ]
+      ],
+      [
         Time.local(2021, 9, 24),
         '',
         [

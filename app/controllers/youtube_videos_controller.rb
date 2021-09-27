@@ -5,7 +5,7 @@ class YoutubeVideosController < ApplicationController
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take
     @videos = @channel.videos
-    @videos = @videos.eager_load(:markers)
+    @videos = @videos.eager_load(:markers).merge(YoutubeVideoMarker.valid)
     process_search_query
     @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
 
