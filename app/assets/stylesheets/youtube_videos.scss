@@ -211,7 +211,7 @@ and (min-resolution:.001dpcm) {
     padding: 40px 0;
     margin: 10px 50px;
 
-    @media screen and (max-width: 795px)  {
+    @media (orientation: portrait) {
       flex-direction: column;
       justify-content: center;
       padding: 20px;
@@ -221,7 +221,7 @@ and (min-resolution:.001dpcm) {
     .video-box__thumbnail {
       width: 40%;
 
-      @media screen and (max-width: 795px)  {
+      @media (orientation: portrait) {
         width: 100%;
       }
 
@@ -235,7 +235,7 @@ and (min-resolution:.001dpcm) {
     .video-box__content {
       width: 40%;
 
-      @media screen and (max-width: 795px)  {
+      @media (orientation: portrait) {
         width: 100%;
       }
 
@@ -339,7 +339,7 @@ and (min-resolution:.001dpcm) {
 
       max-width: 100%;
 
-      @media screen and (max-width: 795px)  {
+      @media (orientation: portrait) {
         flex: 0 1;
         width: 100%;
 
