@@ -23,8 +23,8 @@ class YoutubeVideo < ApplicationRecord
     ActiveRecord::Base.transaction do
       YoutubeVideo.where.not('description like ?', "%\n%").find_each do |video|
         video_hash = fetcher.request_video!(video.video_id)
-        video.description = video_hash['snippet']['description']
-        video.save!
+        video.description = video_hash&.dig('snippet', 'description')
+        video.save! if video.description.present?
       end
     end
   end
