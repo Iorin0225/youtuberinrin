@@ -8,7 +8,7 @@ class YoutubeVideosController < ApplicationController
     @videos = @videos.eager_load(:markers).merge(YoutubeVideoMarker.valid)
     process_search_query!
     @videos = if random?
-      @videos.where(video_id: random_video_ids).order('youtube_video_markers.seconds ASC')
+      @videos.where(video_id: random_video_ids).order('youtube_video_markers.seconds ASC').shuffle
     else
       @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
     end
