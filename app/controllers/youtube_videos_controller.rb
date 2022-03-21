@@ -2,18 +2,21 @@
 
 class YoutubeVideosController < ApplicationController
   def index
+    @limit = limit
+
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take
     @videos = @channel&.videos || YoutubeVideo.all
     @videos = @videos.eager_load(:markers).merge(YoutubeVideoMarker.valid)
-    process_search_query
+    process_search_query!
+    @videos = @videos.limit(@limit)
     @videos = if random?
-      @videos.order("RAND()")
+      @videos.where(video_id: random_video_ids).order('youtube_video_markers.seconds ASC')
     else
       @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
     end
 
-    @limit = limit
+
     @marked = video_search_query.present? || marker_search_query.present? || limit.present?
   end
 
@@ -27,7 +30,7 @@ class YoutubeVideosController < ApplicationController
 
   private
 
-  def process_search_query
+  def process_search_query!
     if video_search_query.present?
       like_query = "%#{video_search_query}%"
       @videos = @videos.where(
@@ -53,6 +56,10 @@ class YoutubeVideosController < ApplicationController
     return 10 unless params[:limit].present?
 
     params[:limit].to_i
+  end
+
+  def random_video_ids
+    @videos.order("RAND()").pluck(:video_id).uniq
   end
 
   def random?
