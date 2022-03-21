@@ -4,10 +4,14 @@ class YoutubeVideosController < ApplicationController
   def index
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take
-    @videos = @channel.videos
+    @videos = @channel&.videos || YoutubeVideo.all
     @videos = @videos.eager_load(:markers).merge(YoutubeVideoMarker.valid)
     process_search_query
-    @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
+    @videos = if random?
+      @videos.order("RAND()")
+    else
+      @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
+    end
 
     @limit = limit
     @marked = video_search_query.present? || marker_search_query.present? || limit.present?
@@ -46,10 +50,12 @@ class YoutubeVideosController < ApplicationController
   end
 
   def limit
-    if params[:limit].present?
-      params[:limit].to_i
-    else
-      10
-    end
+    return 10 unless params[:limit].present?
+
+    params[:limit].to_i
+  end
+
+  def random?
+    @random ||= !!params[:random]
   end
 end
