@@ -56,7 +56,7 @@ class YoutubeVideosController < ApplicationController
   end
 
   def random_video_ids
-    @videos.order("RAND()").pluck(:video_id).uniq
+    YoutubeVideo.pluck(:video_id).sample(limit)
   end
 
   def random?
