@@ -56,7 +56,7 @@ class YoutubeVideosController < ApplicationController
   end
 
   def random_video_ids
-    YoutubeVideo.pluck(:video_id).sample(limit)
+    YoutubeVideo.joins(:markers).merge(YoutubeVideoMarker.valid).pluck(:video_id).uniq.sample(limit)
   end
 
   def random?
