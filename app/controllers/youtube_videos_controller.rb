@@ -63,6 +63,6 @@ class YoutubeVideosController < ApplicationController
   end
 
   def random?
-    @random ||= !!params[:random]
+    @random ||= ActiveRecord::Type::Boolean.new.cast(params[:random])
   end
 end
