@@ -33,9 +33,9 @@
       </div>
       <div class="video-box__content">
         <h3 class="video-box__content__title"><%= video.title %></h3>
-        <h4 class="video-box__content__description"><%= video.description.split("\n").first %></h4>
+        <h4 class="video-box__content__description"><%= video.description.split("\n").first %>  - 配信日: <%= human_date(video.published_at) %></h4>
         <div class="video-box__content__marker-box">
-          <% video.markers.order(:seconds).each do | marker | %>
+          <% video.markers.each do | marker | %>
           <div class="video-box__content__marker-box__item marker-<%= marker.id %>">
             <%= link_to(marker.time_format, '#', onclick: "showPlayerWithUrl('#{marker.label}', '#{video_url_with_marker_for_iframe(video, marker)}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); setSelectedMarker('#{marker.id}'); return false;") %>
             <%= marker.label %>

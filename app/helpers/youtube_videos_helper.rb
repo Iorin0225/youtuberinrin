@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module YoutubeVideosHelper
+  def human_date(datetime)
+    datetime.strftime('%Y/%m/%d')
+  end
+
   def video_url_with_marker(video, marker)
     "#{video.video_url}&t=#{marker.time_second}s"
   end
