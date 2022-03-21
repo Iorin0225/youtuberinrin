@@ -12,7 +12,7 @@ class YoutubeDataFetcher
 
   def initialize; end
 
-  def fetch!(channel_id, update: false)
+  def fetch!(channel_id, update: false, recursive: true)
     channel_hash = request_channel!(channel_id)
     channel = YoutubeChannel.find_or_initialize_by(
       channel_id: channel_hash['id']
@@ -23,7 +23,7 @@ class YoutubeDataFetcher
     channel.thumbnail_url = channel_hash['snippet']['thumbnails']['high']['url']
     channel.save!
 
-    video_hashes = request_search!(channel_id)
+    video_hashes = request_search!(channel_id, recursive: recursive)
     video_hashes.each do |video_hash|
       next if video_hash['id']['videoId'].nil?
 
@@ -57,10 +57,10 @@ class YoutubeDataFetcher
     channel.save!
   end
 
-  def fetch_videos!(channel_id, query: nil, with_comments: true)
+  def fetch_videos!(channel_id, query: nil, with_comments: true, recursive: true)
     channel = YoutubeChannel.find_by!(channel_id: channel_id)
 
-    video_hashes = request_search!(channel_id, query: query)
+    video_hashes = request_search!(channel_id, query: query, recursive: recursive)
     video_hashes.each do |video_hash|
       next if video_hash['id']['videoId'].nil?
 
@@ -68,10 +68,10 @@ class YoutubeDataFetcher
         video_id: video_hash['id']['videoId']
       )
 
-      video.title = video_hash['snippet']['title']
-      video.description = video_hash['snippet']['description']
-      video.thumbnail_url = video_hash['snippet']['thumbnails']['high']['url']
-      video.published_at = video_hash['snippet']['publishedAt']
+      video.title               = video_hash['snippet']['title']
+      video.description         = video_hash['snippet']['description']
+      video.thumbnail_url       = video_hash['snippet']['thumbnails']['high']['url']
+      video.published_at        = video_hash['snippet']['publishedAt']
       video.youtube_channels_id = channel.id
       video.save!
 
@@ -92,10 +92,10 @@ class YoutubeDataFetcher
       channel_id: video_hash['snippet']['channelId']
     )
 
-    video.title = video_hash['snippet']['title']
-    video.description = video_hash['snippet']['description']
-    video.thumbnail_url = video_hash['snippet']['thumbnails']['high']['url']
-    video.published_at = video_hash['snippet']['publishedAt']
+    video.title               = video_hash['snippet']['title']
+    video.description         = video_hash['snippet']['description']
+    video.thumbnail_url       = video_hash['snippet']['thumbnails']['high']['url']
+    video.published_at        = video_hash['snippet']['publishedAt']
     video.youtube_channels_id = channel.id
     video.save!
 
@@ -157,7 +157,7 @@ class YoutubeDataFetcher
     JSON.parse(response.body)['items'].first
   end
 
-  def request_search!(channel_id, page_token = nil, query: nil)
+  def request_search!(channel_id, page_token = nil, query: nil, recursive: true)
     params = {
       key: GOOGLE_API_KEY,
       channelId: channel_id,
@@ -176,8 +176,8 @@ class YoutubeDataFetcher
     items = response_hash['items']
     return [] if items.empty?
 
-    if response_hash.key?('nextPageToken')
-      items | request_search!(channel_id, response_hash['nextPageToken'], query: query)
+    if recursive && response_hash.key?('nextPageToken')
+      items | request_search!(channel_id, response_hash['nextPageToken'], query: query, recursive: recursive)
     else
       items
     end
