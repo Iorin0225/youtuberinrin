@@ -18,6 +18,13 @@ class Update
   def self.updates
     update_data_array = [
       [
+        Time.local(2022, 3, 21),
+        '',
+        [
+          'ランダムで動画を取得できる検索オプションを追加しました。',
+        ]
+      ],
+      [
         Time.local(2021, 9, 27),
         '',
         [
