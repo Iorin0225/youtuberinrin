@@ -38,7 +38,7 @@ class YoutubeVideo < ApplicationRecord
     ActiveRecord::Base.transaction do
       videos.find_each do |video|
         tags = video.description.scan(/[#＃][\w\p{Han}ぁ-ヶｦ-ﾟー 　']+/).map do |tag|
-          tag.strip.gsub(/　/, '').gsub(/＃/, '#').gsub(/# /, '#')
+          tag.gsub(/　/, '').gsub(/＃/, '#').gsub(/# /, '#').strip
         end
         video.update!(tags: tags)
       rescue StandardError => _e
