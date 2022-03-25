@@ -13,6 +13,7 @@ class YoutubeVideosController < ApplicationController
       @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
     end
 
+    @tags_with_count = @channel.tags_with_count
     @limit = limit
     @marked = video_search_query.present? || marker_search_query.present? || limit.present?
   end
@@ -39,6 +40,13 @@ class YoutubeVideosController < ApplicationController
       like_query = "%#{marker_search_query}%"
       @videos = @videos.where('youtube_video_markers.label LIKE ?', like_query)
     end
+
+    if tag_search_query.present?
+      like_query = "%#{tag_search_query}%"
+      @videos = @videos.where(
+        'youtube_videos.title LIKE ? OR youtube_videos.description LIKE ?', like_query, like_query
+      )
+    end
   end
 
   def video_search_query
@@ -47,6 +55,10 @@ class YoutubeVideosController < ApplicationController
 
   def marker_search_query
     params[:marker_query]
+  end
+
+  def tag_search_query
+    params[:tag_query]
   end
 
   def limit
