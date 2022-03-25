@@ -43,6 +43,7 @@ class YoutubeDataFetcher
     end
 
     YoutubeVideo.update_description!
+    YoutubeVideo.update_tags!
   end
 
   def fetch_channel!(channel_id)
