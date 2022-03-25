@@ -42,7 +42,7 @@ class YoutubeDataFetcher
       fetch_comments!(video.video_id, is_generate_markers: true)
     end
 
-    YoutubeVideo.update_description
+    YoutubeVideo.update_description!
   end
 
   def fetch_channel!(channel_id)
