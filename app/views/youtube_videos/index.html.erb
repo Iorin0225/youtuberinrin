@@ -127,6 +127,16 @@
             <%= form.text_field :limit, type: :number, value: @limit, placeholder: '100' %>
           </div>
         </div>
+
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label 'タグから検索:' %>
+          </div>
+          <div class="search-form__row__input">
+            <%= form.select :tag_query, tags_with_count_for_select(@tags_with_count), {prompt: '------', selected: params[:tag_query]}, {} %>
+          </div>
+        </div>
+
         <div class="search-form__row">
           <div class="search-form__row__label">
             <%= form.label 'ランダム:' %>
