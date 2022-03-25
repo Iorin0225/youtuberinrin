@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class YoutubeVideo < ApplicationRecord
+  serialize :tags, JSON
+
   belongs_to :channel, class_name: 'YoutubeChannel', foreign_key: 'youtube_channels_id'
   has_many :comments, class_name: 'YoutubeComment', foreign_key: 'youtube_videos_id'
   has_many :markers, class_name: 'YoutubeVideoMarker', foreign_key: 'youtube_videos_id'
@@ -20,12 +22,26 @@ class YoutubeVideo < ApplicationRecord
 
   def self.update_description!
     fetcher = YoutubeDataFetcher.new
-    YoutubeVideo.where.not('description like ?', "%\n%").find_each do |video|
-      begin
+    ActiveRecord::Base.transaction do
+      YoutubeVideo.where.not('description like ?', "%\n%").find_each do |video|
         video_hash = fetcher.request_video!(video.video_id)
         video.description = video_hash&.dig('snippet', 'description')
         video.save! if video.description.present?
-      rescue => _e
+      rescue StandardError => _e
+        Rails.logger.warning "Failed to updated: #{video.title}"
+      end
+    end
+  end
+
+  def self.update_tags!(force: false)
+    videos = force ? YoutubeVideo : YoutubeVideo.where('tags is NULL')
+    ActiveRecord::Base.transaction do
+      videos.find_each do |video|
+        tags = video.description.scan(/[#＃][\w\p{Han}ぁ-ヶｦ-ﾟー 　']+/).map do |tag|
+          tag.strip.gsub(/　/, '').gsub(/＃/, '#').gsub(/# /, '#')
+        end
+        video.update!(tags: tags)
+      rescue StandardError => _e
         Rails.logger.warning "Failed to updated: #{video.title}"
       end
     end
