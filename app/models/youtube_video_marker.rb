@@ -5,6 +5,7 @@ class YoutubeVideoMarker < ApplicationRecord
 
   belongs_to :video, class_name: 'YoutubeVideo', foreign_key: 'youtube_videos_id'
   scope :valid, -> { where('seconds <= ?', VALID_MAX_SECONDS) }
+  scope :valid_or_empty, -> { where('seconds <= ? OR seconds IS NULL', VALID_MAX_SECONDS) }
 
   def time_2nd
     case time.length
