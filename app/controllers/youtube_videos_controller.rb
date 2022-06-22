@@ -5,7 +5,13 @@ class YoutubeVideosController < ApplicationController
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take
     @videos = @channel&.videos || YoutubeVideo.all
-    @videos = @videos.eager_load(:markers).merge(YoutubeVideoMarker.valid)
+    @videos = @videos.eager_load(:markers)
+    if allow_no_marker?
+      @videos = @videos.merge(YoutubeVideoMarker.valid_or_empty)
+    else
+      @videos = @videos.merge(YoutubeVideoMarker.valid)
+    end
+
     process_search_query!
     @videos = if random?
       @videos.where(video_id: random_video_ids).order('youtube_video_markers.seconds ASC').shuffle
@@ -73,5 +79,9 @@ class YoutubeVideosController < ApplicationController
 
   def random?
     @random ||= ActiveRecord::Type::Boolean.new.cast(params[:random])
+  end
+
+  def allow_no_marker?
+    @allow_no_marker ||= ActiveRecord::Type::Boolean.new.cast(params[:allow_no_marker])
   end
 end

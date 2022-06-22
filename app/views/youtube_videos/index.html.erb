@@ -145,6 +145,16 @@
             <%= form.check_box :random, { checked: @random } %>
           </div>
         </div>
+
+        <div class="search-form__row">
+          <div class="search-form__row__label">
+            <%= form.label 'マーカーなし:' %>
+          </div>
+          <div class="search-form__row__input search-form__row__input--checkbox">
+            <%= form.check_box :allow_no_marker, { checked: @allow_no_marker } %>
+          </div>
+        </div>
+
         <div class="search-form__row__buttons">
           <%= form.submit class: 'button button--submit button--large button--gray' %>
           <%= link_to 'クリア', root_path, class: 'button button--submit button--large button--gray', 'data-turbolinks': false %>
