@@ -23,7 +23,7 @@ FROM quay.io/evl.ms/fullstaq-ruby:${RUBY_VERSION}-${VARIANT} as base
 
 LABEL fly_launch_runtime="rails"
 
-ARG NODE_VERSION=16.18.1
+ARG NODE_VERSION=16.19.0
 ARG YARN_VERSION=1.22.19
 ARG BUNDLER_VERSION=2.2.25
 
@@ -55,7 +55,7 @@ RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION} && \
 
 FROM base as build_deps
 
-ARG BUILD_PACKAGES="git build-essential libpq-dev wget vim curl gzip xz-utils default-libmysqlclient-dev libmariadb-dev"
+ARG BUILD_PACKAGES="git build-essential libpq-dev wget vim curl gzip xz-utils libmariadb-dev-compat libmariadb-dev"
 ENV BUILD_PACKAGES ${BUILD_PACKAGES}
 
 RUN --mount=type=cache,id=dev-apt-cache,sharing=locked,target=/var/cache/apt \
@@ -71,7 +71,6 @@ RUN --mount=type=cache,id=dev-apt-cache,sharing=locked,target=/var/cache/apt \
 FROM build_deps as gems
 
 COPY Gemfile* ./
-RUN gem install mysql2
 RUN bundle install && rm -rf vendor/bundle/ruby/*/cache
 
 #######################################################################
@@ -90,7 +89,7 @@ RUN yarn install
 
 FROM base
 
-ARG DEPLOY_PACKAGES="file vim curl gzip default-mysql-client"
+ARG DEPLOY_PACKAGES="file vim curl gzip libmariadb-dev-compat libmariadb-dev"
 ENV DEPLOY_PACKAGES=${DEPLOY_PACKAGES}
 
 RUN --mount=type=cache,id=prod-apt-cache,sharing=locked,target=/var/cache/apt \
@@ -116,6 +115,7 @@ COPY . .
 # Adjust binstubs to run on Linux and set current working directory
 RUN chmod +x /app/bin/* && \
     sed -i 's/ruby.exe\r*/ruby/' /app/bin/* && \
+    sed -i 's/ruby\r*/ruby/' /app/bin/* && \
     sed -i '/^#!/aDir.chdir File.expand_path("..", __dir__)' /app/bin/*
 
 # The following enable assets to precompile on the build server.  Adjust

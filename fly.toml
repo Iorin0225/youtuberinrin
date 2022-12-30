@@ -1,4 +1,4 @@
-# fly.toml file generated for youtuberinrin on 2022-12-03T04:56:12Z
+# fly.toml file generated for youtuberinrin on 2022-12-30T03:58:15Z
 
 app = "youtuberinrin"
 kill_signal = "SIGINT"
