@@ -43,6 +43,15 @@
           <% end %>
         </div>
       </div>
+      <div class="video-box__action-buttons">
+        <div class="video-box__content__action-buttons__button-wrapper icon-button">
+          <%= link_to(youtube_video_path(video.video_id), method: :put, remote: false, target: '_blank') do %>
+            <button class="video-box__content__action-buttons__button white-button">
+              <i class='fas fa-sync fa-2x'></i>
+            </button>
+          <% end %>
+        </div>
+      </div>
     </div>
     <% end %>
   </div>

@@ -36,10 +36,10 @@ class YoutubeVideo < ApplicationRecord
     end
   end
 
-  def self.update_tags!(force: false)
+  def self.update_tags!(force: false, created_at: 1.month.ago)
     videos = force ? YoutubeVideo : YoutubeVideo.where('tags is NULL')
     ActiveRecord::Base.transaction do
-      videos.find_each do |video|
+      videos.where('created_at > ?', created_at).find_each do |video|
         tags = video.description.scan(/[#＃][\w\p{Han}ぁ-ヶｦ-ﾟー 　']+/).map do |tag|
           tag.gsub(/　/, '').gsub(/＃/, '#').gsub(/# /, '#').strip
         end

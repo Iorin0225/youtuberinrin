@@ -5,5 +5,5 @@ Rails.application.routes.draw do
   post "/graphql", to: "graphql#execute"
 
   root to: 'youtube_videos#index'
-  resources :youtube_videos, only: [:index, :show]
+  resources :youtube_videos, only: [:index, :show, :update]
 end

@@ -127,6 +127,8 @@ and (min-resolution:.001dpcm) {
   border-bottom: 1px solid #ccc;
   width: 100vw;
 
+  z-index: 1000;
+
   * {
     transition: .2s;
   }
@@ -203,6 +205,8 @@ and (min-resolution:.001dpcm) {
   padding-top: 10px;
 
   .video-box {
+    position: relative;
+
     display: flex;
     justify-content: space-evenly;
     border: 1px solid #ccc;
@@ -217,6 +221,28 @@ and (min-resolution:.001dpcm) {
       padding: 20px;
     }
 
+    .video-box__action-buttons {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      gap: 5px;
+
+      @media (orientation: portrait) {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-evenly;
+      }
+
+      .icon-button button {
+        font-size: .4rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
 
     .video-box__thumbnail {
       width: 40%;
@@ -279,6 +305,7 @@ and (min-resolution:.001dpcm) {
 // ===========================
 
 .overlay-panel {
+  z-index: 2000;
 
   opacity: 0;
   visibility: hidden;

@@ -2,8 +2,11 @@
 
 class YoutubeVideosController < ApplicationController
 
+<<<<<<< HEAD
   LIMIT_DEFAULT = 10
 
+=======
+>>>>>>> a263e83 (feat: add update button on each video.)
   def index
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take
@@ -38,7 +41,25 @@ class YoutubeVideosController < ApplicationController
     redirect_to :index if @videos.blank?
     @channel = @videos.take.channel
 
+    @videos = @videos.eager_load(:markers).merge(YoutubeVideoMarker.valid_or_empty)
+    @videos = @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
+
+    @tags_with_count = @channel.tags_with_count
+
     render :index
+  end
+
+  def update
+    @videos = YoutubeVideo.where(video_id: params[:id])
+    @videos.find_each do |video|
+      fetcher = YoutubeDataFetcher.new
+      fetcher.fetch_video!(video.video_id, update: true, is_generate_markers: true)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to action: :show, id: params[:id] }
+      format.json { render json: { status: 'ok' } }
+    end
   end
 
   private
