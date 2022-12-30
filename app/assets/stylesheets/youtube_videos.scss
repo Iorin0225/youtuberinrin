@@ -232,9 +232,7 @@ and (min-resolution:.001dpcm) {
       gap: 5px;
 
       @media (orientation: portrait) {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-evenly;
+        display: none;
       }
 
       .icon-button button {
@@ -422,6 +420,7 @@ and (min-resolution:.001dpcm) {
       text-align: center;
 
       margin: 1rem 0;
+      padding-bottom: 1rem;
       border-bottom: 1px solid #aaa;
     }
 
