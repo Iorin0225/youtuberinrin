@@ -24,6 +24,13 @@ class YoutubeDataFetcher
     channel.save!
 
     video_hashes = request_search!(channel_id, recursive: recursive)
+
+    if update == false
+      video_ids = video_hashes.map { |video_hash| video_hash['id']['videoId'] }
+      exist_video_ids = YoutubeVideo.where(video_id: video_ids).pluck(:video_id)
+      video_hashes.reject! { |video_hash| exist_video_ids.include?(video_hash['id']['videoId']) }
+    end
+
     video_hashes.each do |video_hash|
       next if video_hash['id']['videoId'].nil?
 
