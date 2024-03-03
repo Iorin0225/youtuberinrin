@@ -25,7 +25,8 @@ LABEL fly_launch_runtime="rails"
 
 ARG NODE_VERSION=16.19.0
 ARG YARN_VERSION=1.22.19
-ARG BUNDLER_VERSION=2.2.25
+ARG GEM_VERSION=3.1.6
+ARG BUNDLER_VERSION=2.3.26
 
 ARG RAILS_ENV=production
 ENV RAILS_ENV=${RAILS_ENV}
@@ -46,7 +47,7 @@ RUN curl https://get.volta.sh | bash
 ENV VOLTA_HOME /root/.volta
 ENV PATH $VOLTA_HOME/bin:/usr/local/bin:$PATH
 RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION} && \
-    gem update --system --no-document && \
+    gem update --system ${GEM_VERSION} --no-document && \
     gem install -N bundler -v ${BUNDLER_VERSION}
 
 #######################################################################
