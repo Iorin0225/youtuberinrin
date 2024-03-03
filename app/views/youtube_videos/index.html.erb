@@ -103,20 +103,12 @@
     <h2>検索</h2>
     <div class="form-container">
       <%= form_with url: root_path, method: :get, local: true, class: 'search-form' do |form| %>
-        <div class="search-form__row">
+      <div class="search-form__row">
           <div class="search-form__row__label">
-            <%= form.label 'タイトルなどから検索:' %>
+            <%= form.label 'キーワード:' %>
           </div>
           <div class="search-form__row__input">
-            <%= form.text_field :video_query, value: params[:video_query], placeholder: 'Jump King' %>
-          </div>
-        </div>
-        <div class="search-form__row">
-          <div class="search-form__row__label">
-            <%= form.label '目次から検索:' %>
-          </div>
-          <div class="search-form__row__input">
-            <%= form.text_field :marker_query, value: params[:marker_query], placeholder: '竹田' %>
+            <%= form.text_field :fuzzy_query, value: params[:fuzzy_query], placeholder: 'Jump King' %>
           </div>
         </div>
         <div class="search-form__row">
@@ -148,7 +140,7 @@
 
         <div class="search-form__row">
           <div class="search-form__row__label">
-            <%= form.label 'マーカーなし:' %>
+            <%= form.label '目次なしも含む:' %>
           </div>
           <div class="search-form__row__input search-form__row__input--checkbox">
             <%= form.check_box :allow_no_marker, { checked: @allow_no_marker } %>

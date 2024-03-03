@@ -20,13 +20,15 @@ class YoutubeVideo < ApplicationRecord
     markers
   end
 
-  def self.update_description!(force: false)
-    videos = force ? YoutubeVideo : YoutubeVideo.where('created_at > ?', 1.day.ago)
+  def self.update_description!(force: false, channel_id: nil)
+    videos = force ? YoutubeVideo : YoutubeVideo.where('created_at > ?', 10.day.ago)
+    videos = videos.where(youtube_channels_id: channel_id) if channel_id.present?
     fetcher = YoutubeDataFetcher.new
     ActiveRecord::Base.transaction do
       videos.where.not('description like ?', "%\n%").find_each do |video|
         video_hash = fetcher.request_video!(video.video_id)
-        video.description = video_hash&.dig('snippet', 'description')
+        video.description = video_hash&.dig('snippet',
+          'description')
         video.save! if video.description.present?
       rescue StandardError => _e
         Rails.logger.warning "Failed to updated: #{video.title}"

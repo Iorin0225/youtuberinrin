@@ -16,10 +16,15 @@ class YoutubeChannel < ApplicationRecord
   end
 
   def tags_with_count
+
     return @tags_with_count if @tags_with_count.present?
+
     tags_with_count = {}
     videos.select(:id, :tags).find_each do |video|
+      next if video.tags.blank?
       video.tags.each do |tag|
+        next if tag == '#'
+
         if tags_with_count[tag]&.integer?
           tags_with_count[tag] += 1
         else
@@ -28,7 +33,8 @@ class YoutubeChannel < ApplicationRecord
       end
     end
 
-    @tags_with_count = tags_with_count.sort_by(&:last).reverse!
+    # @tags_with_count = tags_with_count.sort_by(&:last).reverse!
+    @tags_with_count = tags_with_count.sort_by(&:first)
   end
 
   def fetch!(recursive: true)
