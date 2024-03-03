@@ -2,11 +2,8 @@
 
 class YoutubeVideosController < ApplicationController
 
-<<<<<<< HEAD
   LIMIT_DEFAULT = 10
 
-=======
->>>>>>> a263e83 (feat: add update button on each video.)
   def index
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
     @channel ||= YoutubeChannel.take

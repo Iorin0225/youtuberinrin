@@ -62,10 +62,6 @@ class Update
         '',
         [
           '表示件数をデフォルト10件に削減しました。',
-<<<<<<< HEAD
-          'スマートフォンでも通信量を削減します。',
-=======
->>>>>>> a263e83 (feat: add update button on each video.)
         ]
       ],
       [
