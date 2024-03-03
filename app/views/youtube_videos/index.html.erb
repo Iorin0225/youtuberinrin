@@ -38,20 +38,14 @@
           <% video.markers.each do | marker | %>
           <div class="video-box__content__marker-box__item marker-<%= marker.id %>">
             <%= link_to(marker.time_format, '#', onclick: "showPlayerWithUrl('#{marker.label}', '#{video_url_with_marker_for_iframe(video, marker)}', '#{video.video_id}', '#{video.title} - #{@channel.title}'); setSelectedMarker('#{marker.id}'); return false;") %>
-            <%= marker.label %>
+            <span><%= marker.label %></span>
           </div>
           <% end %>
         </div>
       </div>
-      <div class="video-box__action-buttons">
-        <div class="video-box__content__action-buttons__button-wrapper icon-button">
-          <%= link_to(youtube_video_path(video.video_id), method: :put, remote: false, target: '_blank') do %>
-            <button class="video-box__content__action-buttons__button white-button">
-              <i class='fas fa-sync fa-2x'></i>
-            </button>
-          <% end %>
-        </div>
-      </div>
+      <% if Rails.env.development? %>
+        <%= render 'youtube_videos/update_action_button', video: video %>
+      <% end %>
     </div>
     <% end %>
   </div>
@@ -187,11 +181,54 @@
 
   document.addEventListener('DOMContentLoaded', function() {
     toggleLoading(false);
+    rehighlight_words();
   });
 
   document.addEventListener('turbolinks:load', function() {
     toggleLoading(false);
+    rehighlight_words();
   });
+
+  function rehighlight_words() {
+    unhighlight_words();
+    highlight_words();
+  }
+
+  function highlight_words() {
+    let words = [
+      <% @highlight_words.each do | word | %>
+        '<%= word %>',
+      <% end %>
+    ]
+
+    let target_elements = [
+      'h3.video-box__content__title',
+      'h4.video-box__content__description',
+      '.video-box__content__marker-box__item span',
+      'h2.player-title',
+    ]
+
+    words.forEach(word => {
+      let elements = document.querySelectorAll(target_elements.join(','))
+      elements.forEach(element => {
+        highlight_text(element, word)
+      })
+    })
+  }
+
+  function unhighlight_words() {
+    let elements = document.querySelectorAll('.highlight')
+    elements.forEach(element => {
+      element.outerHTML = element.innerHTML
+    })
+  }
+
+  function highlight_text(element, word) {
+    let text = element.innerText
+    let replacedText = text.replace(new RegExp(word, 'g'), `<span class='highlight'>${word}</span>`)
+    element.innerHTML = replacedText
+  }
+
 
   function optimizeSize() {
     let playerObject = document.querySelector('.youtube-player-wrapper');

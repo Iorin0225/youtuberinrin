@@ -16,17 +16,19 @@ class YoutubeVideosController < ApplicationController
     end
 
     process_search_query!
-    @videos = if random?
-      @videos.where(video_id: random_video_ids).order('youtube_video_markers.seconds ASC').shuffle
-    else
-      @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
-    end
-
     process_limit!
+    process_order!
 
     @tags_with_count = @channel.tags_with_count
     @limit = limit
     @marked = has_search_query?
+    @highlight_words = highlight_words
+  end
+
+  def highlight_words
+    return [] if fuzzy_search_query.blank?
+
+    fuzzy_search_query.split(/\s+/).compact
   end
 
   def has_search_query?
@@ -62,10 +64,22 @@ class YoutubeVideosController < ApplicationController
   private
 
   def process_limit!
-    return if random?
+    video_ids = if random?
+      random_video_ids
+    else
+      ordered_video_ids
+    end
 
-    video_ids = @videos.pluck('DISTINCT video_id').take(limit)
-    @videos = @videos.where(video_id: video_ids)
+    @videos.pluck('DISTINCT video_id').take(limit)
+    @videos = @channel.videos.where(video_id: video_ids).eager_load(:markers)
+  end
+
+  def process_order!
+    @videos = if random?
+      @videos.order('youtube_video_markers.seconds ASC').shuffle
+    else
+      @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC')
+    end
   end
 
   def process_search_query!
@@ -126,12 +140,11 @@ class YoutubeVideosController < ApplicationController
     limit == LIMIT_DEFAULT
   end
 
-  def limit_video_ids
-    @channel.videos.joins(:markers).merge(YoutubeVideoMarker.valid).pluck(:video_id).uniq.take(limit)
+  def ordered_video_ids
+    @videos.order('youtube_videos.published_at DESC, youtube_video_markers.seconds ASC').pluck('DISTINCT video_id').take(limit)
   end
 
   def random_video_ids
-    # @channel.videos.joins(:markers).merge(YoutubeVideoMarker.valid).pluck(:video_id).uniq.sample(limit)
     @videos.pluck('DISTINCT video_id').sample(limit)
   end
 
