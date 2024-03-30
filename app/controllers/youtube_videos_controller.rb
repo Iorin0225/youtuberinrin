@@ -2,7 +2,7 @@
 
 class YoutubeVideosController < ApplicationController
 
-  LIMIT_DEFAULT = 10
+  LIMIT_DEFAULT = 50
 
   def index
     @channel = YoutubeChannel.find_by(channel_id: params[:channel_id])
